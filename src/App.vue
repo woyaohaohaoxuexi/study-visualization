@@ -1,16 +1,18 @@
 <template>
   <div id="app">
-    <LearnCanvas />
+    <!-- <LearnCanvas /> -->
+    <Translate />
   </div>
 </template>
 
 <script>
-import LearnCanvas from './components/LearnCanvas'
-
+// import LearnCanvas from './components/LearnCanvas'
+import Translate from './components/canvas/translate'
 export default {
   name: 'App',
   components: {
-    LearnCanvas
+    // LearnCanvas,
+    Translate
   }
 }
 </script>
