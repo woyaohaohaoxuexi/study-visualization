@@ -1,7 +1,7 @@
 <template>
   <div id="app">
 <!--    <LearnCanvas />-->
-    <LearnWebGL />
+<!--    <LearnWebGL />-->
 <!--    <GobangGame />-->
     <!-- <LearnCanvas /> -->
     <Translate />
@@ -11,7 +11,7 @@
 <script>
 import LearnCanvas from './components/LearnCanvas'
 // import GobangGame from './components/GobangGame'
-import LearnWebGL from "@/components/LearnWebGL";
+// import LearnWebGL from "@/components/LearnWebGL";
 // import LearnCanvas from './components/LearnCanvas'
 import Translate from './components/canvas/translate'
 
@@ -19,7 +19,7 @@ export default {
   name: 'App',
   components: {
     // LearnCanvas,
-    LearnWebGL,
+    // LearnWebGL,
     // GobangGame
     Translate
   }
