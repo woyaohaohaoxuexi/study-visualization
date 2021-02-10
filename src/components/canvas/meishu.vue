@@ -3,6 +3,9 @@
 </template>
 
 <script>
+import { default as draw, Vector2D } from './common'
+console.log('yinru', draw.drawBranch, Vector2D);
+
 export default {
   name: "meishu.vue",
   data() {
@@ -11,18 +14,21 @@ export default {
     }
   },
   mounted() {
-    this.int()
+    this.init()
   },
   methods: {
     init() {
       const canvas = this.$refs.canvas
-      canvas.width = 800
-      canvas.height = 600
+      canvas.width = 600
+      canvas.height = 400
       const ctx = canvas.getContext('2d')
       ctx.translate(0, canvas.height)
       ctx.scale(1, -1)
+      // 指定如何绘制线段末端的属性
+      ctx.lineCap = 'round'
 
-
+      const v0 = new Vector2D(256, 0)
+      draw.drawBranch(ctx, v0, 50, 10, 1, 3)
 
     }
   }
