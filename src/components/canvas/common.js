@@ -31,7 +31,6 @@ const drawBranch = (context, v0, length, thickness, dir, bias) => {
 export default {
     drawBranch
 }
-
 export class Vector2D extends Array {
   constructor(x = 1, y = 0) {
     super(x, y);

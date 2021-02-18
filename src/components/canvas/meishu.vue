@@ -4,7 +4,6 @@
 
 <script>
 import { default as draw, Vector2D } from './common'
-console.log('yinru', draw.drawBranch, Vector2D);
 
 export default {
   name: "meishu.vue",
