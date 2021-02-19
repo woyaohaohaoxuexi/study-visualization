@@ -70,6 +70,34 @@ export default {
    * @param {Number} bias 随机因子
    */
   drawBranch(ctx, v0, length, thickness, dir, bias) {
-    
+    // 创建一个单位向量，然后旋转 dir 的角度
+    const v = new Vector2D(1, 0).rotate(dir).scale(length)
+    console.log('v ', v)
+    const v1 = v0.copy().add(v)
+
+    ctx.lineWidth = thickness
+    ctx.beginPath()
+    ctx.moveTo(...v0)
+    ctx.lineTo(...v1)
+    ctx.stroke()
+
+    if (thickness > 2) {
+      const left = Math.PI / 4 + 0.5 * (dir + 0.2) + bias * (Math.random() - 0.5)
+      this.drawBranch(ctx, v1, length * 0.9, thickness * 0.8, left, bias * 0.9)
+      const right = Math.PI / 4 + 0.5 * (dir - 0.2) + bias * (Math.random() - 0.5)
+      this.drawBranch(ctx, v1, length * 0.9, thickness * 0.8, right, bias * 0.9)
+    }
+
+    if (thickness < 5 && Math.random() < 0.3) {
+      ctx.save()
+      ctx.strokeStyle = '#c72c35'
+      const th = Math.random() * 6 + 3
+      ctx.lineWidth = th
+      ctx.beginPath()
+      ctx.moveTo(...v1)
+      ctx.lineTo(v1.x, v1.y - 2)
+      ctx.stroke()
+      ctx.restore()
+    }
   }
 }

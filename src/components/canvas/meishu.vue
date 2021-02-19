@@ -3,7 +3,7 @@
 </template>
 
 <script>
-import { default as draw, Vector2D } from './common'
+import { default as draw, Vector2D } from './common1'
 
 export default {
   name: "meishu.vue",
@@ -27,7 +27,7 @@ export default {
       ctx.lineCap = 'round'
 
       const v0 = new Vector2D(256, 0)
-      draw.drawBranch(ctx, v0, 50, 10, 1, 3)
+      draw.drawBranch(ctx, v0, 50, 10, Math.PI / 2, 3)
 
     }
   }

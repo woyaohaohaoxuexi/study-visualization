@@ -5,7 +5,9 @@
 <!--    <GobangGame />-->
     <!-- <LearnCanvas /> -->
     <!-- <Translate /> -->
-    <VectorTree />
+    <!-- <VectorTree /> -->
+    <!-- <VectorShape /> -->
+    <VectorYuan></VectorYuan>
   </div>
 </template>
 
@@ -14,8 +16,10 @@
 // import GobangGame from './components/GobangGame'
 // import LearnWebGL from "@/components/LearnWebGL";
 // import LearnCanvas from './components/LearnCanvas'
-import Translate from './components/canvas/translate'
+// import Translate from './components/canvas/translate'
 import VectorTree from './components/canvas/meishu'
+import VectorShape from './components/canvas/shape'
+import VectorYuan from './components/canvas/yuan'
 export default {
   name: 'App',
   components: {
@@ -23,7 +27,9 @@ export default {
     // LearnWebGL,
     // GobangGame
     // Translate,
-    VectorTree
+    // VectorTree,
+    // VectorShape,
+    VectorYuan
   }
 }
 </script>
