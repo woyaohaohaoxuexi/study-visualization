@@ -7,7 +7,11 @@
     <!-- <Translate /> -->
     <!-- <VectorTree /> -->
     <!-- <VectorShape /> -->
-    <VectorYuan></VectorYuan>
+<!--    <VectorYuan></VectorYuan>-->
+<!--    <VectorParametric />-->
+<!--    <VectorDuobian />-->
+<!--    <VectorTrianglePolygon />-->
+    <VectorPolygon2d />
   </div>
 </template>
 
@@ -17,9 +21,13 @@
 // import LearnWebGL from "@/components/LearnWebGL";
 // import LearnCanvas from './components/LearnCanvas'
 // import Translate from './components/canvas/translate'
-import VectorTree from './components/canvas/meishu'
-import VectorShape from './components/canvas/shape'
-import VectorYuan from './components/canvas/yuan'
+// import VectorTree from './components/canvas/meishu'
+// import VectorShape from './components/canvas/shape'
+// import VectorYuan from './components/canvas/yuan'
+import VectorParametric from './components/canvas/parametric'
+// import VectorDuobian from './components/canvas/duobian'
+// import VectorTrianglePolygon from './components/canvas/triangle-polygon'
+import VectorPolygon2d from './components/canvas/polygon2d'
 export default {
   name: 'App',
   components: {
@@ -29,7 +37,11 @@ export default {
     // Translate,
     // VectorTree,
     // VectorShape,
-    VectorYuan
+    // VectorYuan
+    // VectorParametric
+    // VectorDuobian,
+    // VectorTrianglePolygon,
+    VectorPolygon2d
   }
 }
 </script>
