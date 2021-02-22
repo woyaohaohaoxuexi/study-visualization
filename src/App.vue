@@ -11,7 +11,9 @@
 <!--    <VectorParametric />-->
 <!--    <VectorDuobian />-->
 <!--    <VectorTrianglePolygon />-->
-    <VectorPolygon2d />
+<!--    <VectorPolygon2d />-->
+<!--    <WebglOne />-->
+    <WebglTwo />
   </div>
 </template>
 
@@ -27,7 +29,9 @@
 import VectorParametric from './components/canvas/parametric'
 // import VectorDuobian from './components/canvas/duobian'
 // import VectorTrianglePolygon from './components/canvas/triangle-polygon'
-import VectorPolygon2d from './components/canvas/polygon2d'
+// import VectorPolygon2d from './components/canvas/polygon2d'
+// import WebglOne from './components/webgl/gl01'
+import WebglTwo from './components/webgl/gl02'
 export default {
   name: 'App',
   components: {
@@ -41,7 +45,9 @@ export default {
     // VectorParametric
     // VectorDuobian,
     // VectorTrianglePolygon,
-    VectorPolygon2d
+    // VectorPolygon2d,
+    // WebglOne,
+    WebglTwo
   }
 }
 </script>
