@@ -5,6 +5,7 @@
 </template>
 
 <script>
+// 概况： 三角形，熟悉 webGL 绘图流程
 export default {
   name: "LearnWebGL",
   data() {

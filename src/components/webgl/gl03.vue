@@ -46,34 +46,58 @@ export default {
       // 还有需要注意的一点是： 如果设置了 float 类型就必须有小数点（整数也要添加小数点）
       // fract 用来取一个数的小数部分。
       const fragment = `
-        precision mediump float;
+        #ifdef GL_ES
+        precision highp float;
+        #endif
 
         varying vec2 vUv;
-        uniform float rows;
+
+        uniform vec2 center;
+        uniform float scale;
+        uniform int iterations;
+
+        vec3 palette(float t, vec3 c1, vec3 c2, vec3 c3, vec3 c4) {
+          float x = 1.0 / 3.0;
+          if (t < x) return mix(c1, c2, t/x);
+          else if (t < 2.0 * x) return mix(c2, c3, (t - x)/x);
+          else if (t < 3.0 * x) return mix(c3, c4, (t - 2.0*x)/x);
+          return c4;
+        }
+
+        vec2 f(vec2 z, vec2 c) {
+          return mat2(z, -z.y, z.x) * z + c;
+        }
 
         void main()
         {
-          // 把整个画布分为 rows 份。每一份的坐标都是从左下角开始，由 0 到 1。当 x 大于 0.9 时显示灰色，当 y 小于 0.1 时显示灰色
-          vec2 st = fract(vUv * rows);
-          float d1 = step(st.x, 0.9);
-          float d2 = step(0.1, st.y);
-          gl_FragColor.rgb = mix(vec3(0.8), vec3(1.0), d1 * d2);
+          vec2 uv = vUv;
+          vec2 c = center + 4.0 * (uv - vec2(0.5)) / scale;
+          vec2 z = vec2(0.0);
+
+          bool escaped = false;
+          int j;
+          for (int i = 0; i < 65536; i++) {
+            if (i > iterations) break;
+            j = i;
+            z = f(z, c);
+            if (length(z) > 2.0) {
+               escaped = true;
+               break;
+            }
+          }
+
+          gl_FragColor.rgb = escaped ? max(1.0, log(scale)) * palette(float(j) / float(iterations), vec3(0.02, 0.02, 0.03),
+            vec3(0.1, 0.2, 0.3), vec3(0.0, 0.3, 0.2), vec3(0.0, 0.5, 0.8)) : vec3(0.0);
           gl_FragColor.a = 1.0;
         }
       `
 
       const program = renderer.compileSync(fragment, vertex)
       renderer.useProgram(program)
-      renderer.uniforms.rows = 8
 
-      const rows = [1, 4, 16, 32, 64]
-      let idx = 0
-      // const timerId = setInterval(() => {
-      //   renderer.uniforms.rows = rows[idx++]
-      //   if (idx > 4) {
-      //     clearInterval(timerId)
-      //   }
-      // }, 1000)
+      renderer.uniforms.center = [0, 0];
+      renderer.uniforms.scale = 1;
+      renderer.uniforms.iterations = 256;
 
       renderer.setMeshData([{
         positions: [
@@ -94,6 +118,15 @@ export default {
       }])
 
       renderer.render()
+
+      function update() {
+        const factor = Math.max(0.1, Math.log(renderer.uniforms.scale));
+        renderer.uniforms.scale = (renderer.uniforms.scale += factor) % 10000;
+        renderer.uniforms.iterations = factor * 500;
+        requestAnimationFrame(update);
+      }
+
+      // setTimeout(update, 2000)
     }
   }
 }

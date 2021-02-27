@@ -1,19 +1,6 @@
 <template>
   <div id="app">
-<!--    <LearnCanvas />-->
-<!--    <LearnWebGL />-->
-<!--    <GobangGame />-->
-    <!-- <LearnCanvas /> -->
-    <!-- <Translate /> -->
-    <!-- <VectorTree /> -->
-    <!-- <VectorShape /> -->
-<!--    <VectorYuan></VectorYuan>-->
-<!--    <VectorParametric />-->
-<!--    <VectorDuobian />-->
-<!--    <VectorTrianglePolygon />-->
-<!--    <VectorPolygon2d />-->
-<!--    <WebglOne />-->
-    <WebglTwo />
+    <components :is="currentComponent"></components>
   </div>
 </template>
 
@@ -26,12 +13,19 @@
 // import VectorTree from './components/canvas/meishu'
 // import VectorShape from './components/canvas/shape'
 // import VectorYuan from './components/canvas/yuan'
-import VectorParametric from './components/canvas/parametric'
+// import VectorParametric from './components/canvas/parametric'
 // import VectorDuobian from './components/canvas/duobian'
 // import VectorTrianglePolygon from './components/canvas/triangle-polygon'
 // import VectorPolygon2d from './components/canvas/polygon2d'
+// import VectorXiangsu from './components/canvas/xiangsu04'
 // import WebglOne from './components/webgl/gl01'
-import WebglTwo from './components/webgl/gl02'
+// import WebglTwo from './components/webgl/gl02'
+// import WebglThree from './components/webgl/gl03'
+// import BabylonGl from "@/components/babylon/BabylonGl";
+import BabylonXiantiao from "@/components/babylon/BabylonXiantiao";
+import BabylonMaterial from "@/components/babylon/BabylonMaterial";
+import EchartsOne from "@/components/echarts/EchartsOne";
+import EchartsGl from "@/components/echarts/EchartsGl";
 export default {
   name: 'App',
   components: {
@@ -41,13 +35,25 @@ export default {
     // Translate,
     // VectorTree,
     // VectorShape,
-    // VectorYuan
+    // VectorYuan,
     // VectorParametric
     // VectorDuobian,
     // VectorTrianglePolygon,
     // VectorPolygon2d,
     // WebglOne,
-    WebglTwo
+    // WebglTwo,
+    // WebglThree,
+    // VectorXiangsu,
+    // BabylonGl,
+    BabylonXiantiao,
+    BabylonMaterial,
+    EchartsOne,
+    EchartsGl
+  },
+  data() {
+    return {
+      currentComponent: 'EchartsGl'
+    }
   }
 }
 </script>
