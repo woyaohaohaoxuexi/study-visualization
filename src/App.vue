@@ -24,6 +24,7 @@
 // import BabylonGl from "@/components/babylon/BabylonGl";
 import BabylonXiantiao from "@/components/babylon/BabylonXiantiao";
 import BabylonMaterial from "@/components/babylon/BabylonMaterial";
+import BabylonModule from "@/components/babylon/BabylonModule";
 import EchartsOne from "@/components/echarts/EchartsOne";
 import EchartsGl from "@/components/echarts/EchartsGl";
 export default {
@@ -47,6 +48,7 @@ export default {
     // BabylonGl,
     BabylonXiantiao,
     BabylonMaterial,
+    BabylonModule,
     EchartsOne,
     EchartsGl
   },

@@ -17,9 +17,9 @@ export default {
   },
   methods: {
     init() {
-      this.myChart = echarts.init(this.$refs.mapContent)
-      this.getQingDaoMapTwo()
+      this.get3DMap()
     },
+    // 配置的 map3D
     getQingDaoMap() {
       fetch('/src/370200.json')
         .then(res => res.json())
@@ -149,21 +149,29 @@ export default {
           }
         })
     },
+    // 配置的 geo3D
     getQingDaoMapTwo() {
       fetch('/src/370200.json')
         .then(res => res.json())
         .then(res => {
           console.log('地图数据', res)
           echarts.registerMap('青岛', res)
+          const dataList = res.features.map((item, index) => {
+            const { center, name } = item.properties
+            return {
+              name,
+              value: [...center, 10 * index + 100]
+            }
+          })
           const img = new Image()
           img.src = '/src/ditu.png'
           img.onload = () => {
             this.myChart.setOption({
               geo3D: {
-                show: true,
+                // show: true,
                 map: '青岛',
                 boxDepth: 50,
-                regionHeight: 5,
+                regionHeight: 3,
                 environment: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
                   offset: 0, color: '#00aaff' // 天空颜色
                 }, {
@@ -181,8 +189,8 @@ export default {
                 regions: [
                   {
                     name: '黄岛区',
-                    height: 8,
-                    regionHeight: 8,
+                    // height: 5,
+                    // regionHeight: 5,  // 不起作用
                     emphasis: {
                       label: {
                         textStyle: {
@@ -193,7 +201,14 @@ export default {
                     }
                   }
                 ]
-              }
+              },
+              series: [
+                {
+                  type: 'bar3D',
+                  coordinateSystem: 'geo3D',
+                  data: dataList
+                }
+              ]
             })
 
             this.myChart.on('click', function (params) {
@@ -201,6 +216,73 @@ export default {
             })
           }
         })
+    },
+    // 同时配置 geo3D 和 map3D
+    get3DMap() {
+      fetch('/src/370200.json')
+        .then(res => res.json())
+        .then(res => {
+          console.log('地图数据', res)
+          const { features } = res
+          this.registerMap('青岛', res)
+
+          this.myChart.on('click', params => {
+            console.log('params', params)
+            const { componentSubType, name } = params
+            if (componentSubType === 'map3D' && name) {
+              const mapData = features.find(item => item.properties.name === name)
+              const code = mapData.properties.adcode
+
+              this.registerMap(name, {
+                type: 'FeatureCollection',
+                features: [mapData]
+              })
+            }
+          })
+        })
+    },
+    registerMap(name, data) {
+      this.myChart && this.myChart.dispose()
+      this.myChart = echarts.init(this.$refs.mapContent)
+      echarts.registerMap(name, data)
+      let options = {
+        // geo3D: {
+        //   map: '青岛',
+        //   itemStyle: {
+        //     color: 'rgba(0, 0, 0, 0)',
+        //     opacity: 0,
+        //     borderColor: 'rgba(0, 0, 0 0)',
+        //     borderWidth: 0
+        //   }
+        // },
+        series: [
+          {
+            type: 'map3D',
+            map: name,
+            itemStyle: {
+              color: 'rgba(1, 16, 31, 1)',
+              opacity: 1,
+              // borderColor: 'rgba(1, 16, 31, .6)',
+              borderColor: 'red',
+              borderWidth: 1
+            },
+            label: {
+              show: false
+            },
+            emphasis: {
+              label: {
+                show: true
+              },
+              itemStyle: {
+                color: 'skyblue',
+                opacity: 1
+              }
+            },
+            zlevel: 1
+          }
+        ]
+      }
+      this.myChart.setOption(options, true)
     },
     handlerMousemove(params) {
       console.log('params', params)
