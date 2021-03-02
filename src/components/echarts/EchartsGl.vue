@@ -3,13 +3,56 @@
 </template>
 
 <script>
+let options = {
+  // geo3D: {
+  //   map: '青岛',
+  //   itemStyle: {
+  //     color: 'rgba(0, 0, 0, 0)',
+  //     opacity: 0,
+  //     borderColor: 'rgba(0, 0, 0 0)',
+  //     borderWidth: 0
+  //   }
+  // },
+  series: [
+    {
+      type: 'map3D',
+      map: name,
+      itemStyle: {
+        color: 'rgba(1, 16, 31, 1)',
+        opacity: 1,
+        // borderColor: 'rgba(1, 16, 31, .6)',
+        borderColor: 'red',
+        borderWidth: 1
+      },
+      label: {
+        show: false
+      },
+      emphasis: {
+        label: {
+          show: true
+        },
+        itemStyle: {
+          color: 'skyblue',
+          opacity: 1
+        }
+      },
+      zlevel: 1
+    }
+  ]
+}
 import * as echarts from 'echarts'
 import 'echarts-gl'
 export default {
   name: "EchartsGl",
   data() {
     return {
-      myChart: null
+      myChart: null,
+      map: null,
+      curMap: {
+        current: '',
+        parent: null,
+        childrenNum: 0
+      }
     }
   },
   mounted() {
@@ -17,6 +60,7 @@ export default {
   },
   methods: {
     init() {
+      this.myChart = echarts.init(this.$refs.mapContent)
       this.get3DMap()
     },
     // 配置的 map3D
@@ -223,66 +267,205 @@ export default {
         .then(res => res.json())
         .then(res => {
           console.log('地图数据', res)
-          const { features } = res
-          this.registerMap('青岛', res)
-
-          this.myChart.on('click', params => {
-            console.log('params', params)
-            const { componentSubType, name } = params
-            if (componentSubType === 'map3D' && name) {
-              const mapData = features.find(item => item.properties.name === name)
-              const code = mapData.properties.adcode
-
-              this.registerMap(name, {
-                type: 'FeatureCollection',
-                features: [mapData]
-              })
+          this.map = res
+          this.regions = res.features.map(item => {
+            const value = Math.random() * 100
+            return {
+              name: item.properties.name,
+              value: [...item.properties.center, Math.random() * 100],
+              height: value / 2
             }
           })
+          console.log('regions', this.regions)
+          this.registerMap('青岛', res)
+          this.curMap = {
+            current: '青岛',
+            parent: null,
+            childrenNum: res.features.length
+          }
         })
     },
     registerMap(name, data) {
       this.myChart && this.myChart.dispose()
+      //
       this.myChart = echarts.init(this.$refs.mapContent)
       echarts.registerMap(name, data)
-      let options = {
-        // geo3D: {
-        //   map: '青岛',
-        //   itemStyle: {
-        //     color: 'rgba(0, 0, 0, 0)',
-        //     opacity: 0,
-        //     borderColor: 'rgba(0, 0, 0 0)',
-        //     borderWidth: 0
+
+      // map3D配置
+      const map3DOptions = this.generateMap3D(name)
+      this.myChart.setOption(map3DOptions, true)
+
+      this.myChart.on('click', params => {
+        console.log('params', params)
+        if (this.curMap.childrenNum) {
+          const { componentSubType, name } = params
+          const { features } = this.map
+          if (componentSubType === 'map3D' && name) {
+            const mapData = features.find(item => item.properties.name === name)
+            // const code = mapData.properties.adcode
+            const { adcode, childrenNum, parent } = mapData.properties
+            this.curMap = {
+              current: name,
+              parent,
+              childrenNum
+            }
+            this.registerMap(name, {
+              type: 'FeatureCollection',
+              features: [mapData]
+            })
+          }
+        }
+      })
+      this.myChart.getZr().on('click', params => {
+        console.log('getZr params', params)
+        // if (!params.target) {
+        //   this.registerMap('青岛', this.map)
+        //   this.curMap = {
+        //     current: '青岛',
+        //     parent: null,
+        //     childrenNum: this.map.features.length
         //   }
-        // },
+        // }
+      })
+      this.myChart.on('mouseover', params => {
+        console.log('mouseover ', params)
+      })
+      this.myChart.on('mouseout', params => {
+        console.log('MOUSEOUT ', params)
+      })
+      this.myChart.getZr().on('mousemove', params => {
+        console.log('getZr mousemove params', params)
+        const { offsetX, offsetY } = params
+        const isHave = this.myChart.containPixel({ seriesIndex: 0}, [offsetX, offsetY])
+        console.log('鼠标是否在地图中', isHave)
+      })
+    },
+    generateMap3D(mapName) {
+      const data = []
+      const _this = this
+      let options = {
+        geo3D: {
+          map: mapName,
+          itemStyle: {
+            color: 'rgba(0, 0, 0, 0)',
+            opacity: 0,
+            borderColor: 'rgba(0, 0, 0 0)',
+            borderWidth: 0
+          },
+          boxWidth: 60,
+          regionHeight: 5,
+          // emphasis: {
+          //   label: {
+          //     show: false
+          //   },
+          //   itemStyle: {
+          //     color: 'rgba(0, 0, 0, 0.8)',
+          //     opacity: 0.8
+          //   }
+          // }
+        },
         series: [
           {
             type: 'map3D',
-            map: name,
-            itemStyle: {
-              color: 'rgba(1, 16, 31, 1)',
-              opacity: 1,
-              // borderColor: 'rgba(1, 16, 31, .6)',
-              borderColor: 'red',
-              borderWidth: 1
-            },
+            name: 'map3D',
+            map: mapName,
+            // 地图展示的宽度
+            boxWidth: 60,
+            // 默认自动，与 geoJSON 中数据的比例保持一致。
+            boxDepth: 'auto',
+            regionHeight: 5,
+            // height: 500,
+            // 配置环境信息
+            environment: 'auto',
+            // 设置标签相关设置
             label: {
-              show: false
+              show: true,
+              distance: 0,
+              formatter(params) {
+                // console.log('formatter Params', params)
+                return params.name
+              },
+              textStyle: {
+                color: 'skyblue',
+                borderWidth: 5,
+                fontSize: 18,
+                fontWeight: 700,
+                borderColor: 'red'
+              }
+            },
+            // 设置三维图形的视觉属性
+            itemStyle: {
+              color: 'rgba(200, 220, 180, 1)',
+              opacity: 1,
+              borderWidth: 2,
+              borderColor: '#7d7d7d'
             },
             emphasis: {
               label: {
-                show: true
+                formatter(params) {
+                  // 可以监听到 hover 事件
+                  // console.log('hover 高亮', params)
+                  // params.data.height = 5
+                  // const tempData = options.series[0].data
+                  // options.series[0].data = tempData.map(item => {
+                  //   if (item.name === params.name) {
+                  //     item.height = 8
+                  //   } else {
+                  //     item.height = 5
+                  //   }
+                  //   return item
+                  // })
+                  // _this.myChart.setOption(options)
+                  return params.name
+                },
+                textStyle: {
+                  color: 'blue'
+                }
               },
               itemStyle: {
-                color: 'skyblue',
-                opacity: 1
+                color: 'green',
+                opacity: 0.8,
+                height: 6
               }
             },
-            zlevel: 1
+            data: [
+              {
+                name: '黄岛区',
+                value: 120,
+                // height: 5
+              },
+              {
+                name: '胶州市',
+                value: 130,
+                // height: 6
+              }
+            ]
+
+          },
+          {
+            name: 'bar3D',
+            type: 'bar3D',
+            coordinateSystem: 'geo3D',
+            minHeight: 5,
+            maxHeight: 100,
+            bevelSmoothness: 2,
+            itemStyle: {
+              color: 'orange'
+            },
+            animation: true,
+            label: {
+              show: true,
+              distance: 5,
+              formatter(params) {
+                console.log('bar3D params', params)
+                return params.value[2]
+              }
+            },
+            data: this.regions
           }
         ]
       }
-      this.myChart.setOption(options, true)
+      return options
     },
     handlerMousemove(params) {
       console.log('params', params)
