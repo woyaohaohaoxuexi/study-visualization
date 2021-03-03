@@ -30,6 +30,7 @@ import EchartsGl from "@/components/echarts/EchartsGl";
 import EchartsMap from "@/components/echarts/EchartsMap";
 import EchartsMap2 from "@/components/echarts/EchartsMap2";
 import CanvasRotate from "@/components/canvas/CanvasRotate";
+import GlOne from '@/components/webgl/GlOne'
 export default {
   name: 'App',
   components: {
@@ -56,11 +57,12 @@ export default {
     EchartsGl,
     EchartsMap,
     EchartsMap2,
-    CanvasRotate
+    CanvasRotate,
+    GlOne
   },
   data() {
     return {
-      currentComponent: 'EchartsMap2'
+      currentComponent: 'GlOne'
     }
   }
 }
