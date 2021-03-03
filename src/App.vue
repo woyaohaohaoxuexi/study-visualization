@@ -27,6 +27,9 @@ import BabylonMaterial from "@/components/babylon/BabylonMaterial";
 import BabylonModule from "@/components/babylon/BabylonModule";
 import EchartsOne from "@/components/echarts/EchartsOne";
 import EchartsGl from "@/components/echarts/EchartsGl";
+import EchartsMap from "@/components/echarts/EchartsMap";
+import EchartsMap2 from "@/components/echarts/EchartsMap2";
+import CanvasRotate from "@/components/canvas/CanvasRotate";
 export default {
   name: 'App',
   components: {
@@ -50,11 +53,14 @@ export default {
     BabylonMaterial,
     BabylonModule,
     EchartsOne,
-    EchartsGl
+    EchartsGl,
+    EchartsMap,
+    EchartsMap2,
+    CanvasRotate
   },
   data() {
     return {
-      currentComponent: 'EchartsGl'
+      currentComponent: 'EchartsMap2'
     }
   }
 }

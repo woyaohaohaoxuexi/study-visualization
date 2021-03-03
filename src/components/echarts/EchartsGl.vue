@@ -333,37 +333,18 @@ export default {
       this.myChart.on('mouseout', params => {
         console.log('MOUSEOUT ', params)
       })
-      this.myChart.getZr().on('mousemove', params => {
-        console.log('getZr mousemove params', params)
-        const { offsetX, offsetY } = params
-        const isHave = this.myChart.containPixel({ seriesIndex: 0}, [offsetX, offsetY])
-        console.log('鼠标是否在地图中', isHave)
-      })
+      // this.myChart.getZr().on('mousemove', params => {
+      //   console.log('getZr mousemove params', params)
+      //   const { offsetX, offsetY } = params
+      //   const isHave = this.myChart.containPixel({ seriesIndex: 0}, [offsetX, offsetY])
+      //   console.log('鼠标是否在地图中', isHave)
+      // })
     },
     generateMap3D(mapName) {
       const data = []
       const _this = this
       let options = {
-        geo3D: {
-          map: mapName,
-          itemStyle: {
-            color: 'rgba(0, 0, 0, 0)',
-            opacity: 0,
-            borderColor: 'rgba(0, 0, 0 0)',
-            borderWidth: 0
-          },
-          boxWidth: 60,
-          regionHeight: 5,
-          // emphasis: {
-          //   label: {
-          //     show: false
-          //   },
-          //   itemStyle: {
-          //     color: 'rgba(0, 0, 0, 0.8)',
-          //     opacity: 0.8
-          //   }
-          // }
-        },
+
         series: [
           {
             type: 'map3D',
@@ -441,27 +422,6 @@ export default {
               }
             ]
 
-          },
-          {
-            name: 'bar3D',
-            type: 'bar3D',
-            coordinateSystem: 'geo3D',
-            minHeight: 5,
-            maxHeight: 100,
-            bevelSmoothness: 2,
-            itemStyle: {
-              color: 'orange'
-            },
-            animation: true,
-            label: {
-              show: true,
-              distance: 5,
-              formatter(params) {
-                console.log('bar3D params', params)
-                return params.value[2]
-              }
-            },
-            data: this.regions
           }
         ]
       }
