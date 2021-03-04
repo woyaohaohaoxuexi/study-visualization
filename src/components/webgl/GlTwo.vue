@@ -5,6 +5,7 @@
 </template>
 
 <script>
+import { randomInt, setRectangle } from './util'
 export default {
   name: "GlTwo",
   mounted() {
@@ -60,7 +61,7 @@ export default {
     // 找到顶点属性在着色程序中的位置
     const attributeLocation = gl.getAttribLocation(program, 'a_position')
     const resolutionUniformLocation = gl.getUniformLocation(program, 'u_resolution')
-
+    const colorUniformLocation = gl.getUniformLocation(program, 'u_color')
 
     // 设置顶点数据
     const points = [
@@ -73,7 +74,7 @@ export default {
     ]
     const positionBuffer = gl.createBuffer()
     gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer)
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(points), gl.STATIC_DRAW)
+    // gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(points), gl.STATIC_DRAW)
 
 
 
@@ -86,8 +87,14 @@ export default {
     gl.enableVertexAttribArray(attributeLocation)
 
     gl.uniform2f(resolutionUniformLocation, gl.canvas.width, gl.canvas.height)
+    
+    for (let i = 0; i < 50; i++) {
+      setRectangle(gl, randomInt(300), randomInt(300), randomInt(300), randomInt(300))
 
-    gl.drawArrays(gl.TRIANGLES, 0, 6)
+      gl.uniform4f(colorUniformLocation, Math.random(), Math.random(), Math.random(), 1)
+      gl.drawArrays(gl.TRIANGLES, 0, 6)
+    }
+    // gl.drawArrays(gl.TRIANGLES, 0, 6)
   }
 }
 </script>
