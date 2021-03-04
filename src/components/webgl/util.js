@@ -8,7 +8,8 @@ export const createShader = (gl, type, source) => {
   // 编译 -> 生成着色器
   gl.compileShader(shader)
   // 获取着色器是否编译成功信息
-  const success = gl.getShaderParameter(shader, gl.COMPILE_SUCCESS)
+  const success = gl.getShaderParameter(shader, gl.COMPILE_STATUS)
+  console.log('着色器是否创建成功', success)
   if (success) {
     return shader
   }

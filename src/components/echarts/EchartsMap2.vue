@@ -12,7 +12,9 @@ export default {
       myChart: null,
       curCheckArea: '',
       scatters: null,
-      regions: null
+      regions: null,
+      curHoverArea: '',
+      options: null
     }
   },
   mounted() {
@@ -27,7 +29,7 @@ export default {
           this.regions = map.features.map(item => {
             return {
               name: item.properties.name,
-              height: 4
+              height: 4.5
             }
           })
           this.scatters = map.features.map(item => {
@@ -45,11 +47,44 @@ export default {
     async initMap() {
       const options = await this.generateOption()
       console.log('OPTIONS', options)
+      this.options = options
       this.myChart.setOption(options)
 
-      this.myChart.getZr().on('click', params => {
+      this.myChart.getZr().on('click', async params => {
         const cursor = this.$refs.echartsContent.children[0].style.cursor
+        const curHoverArea = this.curHoverArea
         console.log('当前鼠标样式', cursor) // default pointer
+        console.log('当前高亮区域', this.curHoverArea)
+
+        if (cursor === 'pointer' && curHoverArea) {
+          const newOptions = await this.generateOption()
+          console.log('数据', options.geo3D[0].regions)
+          // const data = options.geo3D[0].regions.map(item => {
+          //   if (item.name === curHoverArea) {
+          //     item.height = 6
+          //   } else {
+          //     item.height = 4.5
+          //   }
+          //   return item
+          // })
+          newOptions.geo3D[0].regions.forEach(item => {
+            if (item.name === curHoverArea) {
+              item.height = 6
+            } else {
+              item.height = 4.5
+            }
+          })
+
+          // options.geo3D[0].data.forEach(item => {
+          //   if (item.name === curHoverArea) {
+          //     item.height = 5
+          //   } else {
+          //     item.height = 4
+          //   }
+          // })
+          // console.log('OPTIONS ', data)
+          this.myChart.setOption(newOptions)
+        }
       })
     },
     loadImage(src) {
@@ -63,40 +98,69 @@ export default {
       })
     },
     generateOption() {
+      const _this = this
       return new Promise(resolve => {
         Promise.all([
           this.loadImage('/src/mountain-1.png'),
           this.loadImage('/src/soil-1.png')
         ]).then(imgArr => {
-          console.log('图片加载', imgArr)
           resolve({
             geo3D: [
               {
-              show: true,
-              map: '青岛',
-              boxWidth: 60,
-              regionHeight: 4.5,
-              itemStyle: {
-                color: [1, 1, 1, 1],
-                opacity: 1,
-                borderWidth: 2,
-                borderColor: '#aaa'
-              },
-              emphasis: {
-                label: {
-                  show: false
-                },
+                show: true,
+                name: 'topMap',
+                map: '青岛',
+                boxWidth: 60,
+                regionHeight: 4.5,
+                top: 'top',
                 itemStyle: {
-                  color: [1, 0, 1, 1]
-                }
+                  color: [1, 1, 1, 1],
+                  opacity: 1,
+                  borderWidth: 2,
+                  borderColor: '#aaa'
+                },
+                emphasis: {
+                  label: {
+                    show: true,
+                    formatter(params) {
+                      console.log('hover', params)
+                      _this.curHoverArea = params.name
+                      return params.name
+                    }
+                  },
+                  itemStyle: {
+                    color: [1, 0, 1, 1]
+                  }
+                },
+                shading: 'realistic',
+                realisticMaterial: {
+                  detailTexture: imgArr[0]
+                },
+                viewControl: {
+                  projection: 'perspective', // perspective orthographic
+                  // autoRotate: true,
+                  autoRotateDirection: 'cw',
+                  autoRotateAfterStill: 1.5,
+
+                  distance: 100,
+                  minDistance: 80,
+                  maxDistance: 200,
+                  zoomSensitivity: 2,
+                  rotateSensitivity: [2, 1],
+                  // alpha: 60, // 绕 x 轴旋转角度，也就是上下角度
+                  // beta: 0,  // 绕 y 轴旋转角度，也就是左右角度
+                  maxAlpha: 90,
+                  minBeta: -3600,
+                  maxBeta: 3600,
+                  animation: true,
+                  animationDurationUpdate: 1500,
+                  animationEasingUpdate: 'cubicInOut'
+                },
+                regions: this.regions
               },
-              shading: 'realistic',
-              realisticMaterial: {
-                detailTexture: imgArr[0]
-              }
-            },
               {
                 show: true,
+                name: 'bottomMap',
                 map: '青岛',
                 boxWidth: 60,
                 regionHeight: 3.9,
@@ -112,7 +176,27 @@ export default {
                 shading: 'realistic',
                 realisticMaterial: {
                   detailTexture: imgArr[1]
-                }
+                },
+                viewControl: {
+                  projection: 'perspective', // perspective orthographic
+                  // autoRotate: true,
+                  autoRotateDirection: 'cw',
+                  autoRotateAfterStill: 1.5,
+
+                  distance: 100,
+                  minDistance: 80,
+                  maxDistance: 200,
+                  zoomSensitivity: 2,
+                  rotateSensitivity: [2, 1],
+                  // alpha: 60, // 绕 x 轴旋转角度，也就是上下角度
+                  // beta: 0,  // 绕 y 轴旋转角度，也就是左右角度
+                  maxAlpha: 90,
+                  minBeta: -3600,
+                  maxBeta: 3600,
+                  animation: true,
+                  animationDurationUpdate: 1500,
+                  animationEasingUpdate: 'cubicInOut'
+                },
               },
             ],
             series: [
