@@ -1,17 +1,37 @@
 <template>
   <div>
     <canvas ref="canvas" class="canvas"></canvas>
+    <div id="uiContainer">
+    <div id="ui">
+      <div id="x"></div>
+      <div id="y"></div>
+    </div>
+  </div>
   </div>
 </template>
 
 <script>
+const webglLessonsUI = require('@/assets/webgl-lessons-ui');
+const webglUtils = require('@/assets/webgl-utils');
+
+// console.log('UI ', webglLessonsUi);
+
 export default {
   name: "GlFour",
+  data() {
+    return {
+      translation: [0, 0],
+      gl: null,
+      positionLocation: null,
+      resolutionLocation: null,
+      colorLocation: null
+    }
+  },
   mounted() {
     const canvas = this.$refs.canvas
     canvas.width = 800
     canvas.height = 600
-    const gl = canvas.getContext('webgl')
+    const gl = this.gl = canvas.getContext('webgl')
 
     // 设置顶点着色器
     const vertex = `
@@ -28,8 +48,9 @@ export default {
     const fragment = `
       precision mediump float;
 
+      uniform vec4 u_color;
       void main() {
-        gl_FragColor = vec4(0.8, 0.1, 0.7, 1);
+        gl_FragColor = u_color;
       }
     `
     const vertexShader = this.createShader(gl, gl.VERTEX_SHADER, vertex)
@@ -52,15 +73,24 @@ export default {
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(points), gl.STATIC_DRAW)
     // 一定要在设置 uniform 变量前调用这个函数
     gl.useProgram(program)
-    const positionVertexLocation = gl.getAttribLocation(program, 'a_position')
-    const resolutionUniformLocation = gl.getUniformLocation(program, 'u_resolution')
-    gl.enableVertexAttribArray(positionVertexLocation)
-    gl.uniform2f(resolutionUniformLocation, gl.canvas.width, gl.canvas.height)
-    gl.viewport(0, 0, gl.canvas.width, gl.canvas.height)
+    this.positionLocation = gl.getAttribLocation(program, 'a_position')
+    this.resolutionLocation = gl.getUniformLocation(program, 'u_resolution')
+    this.colorLocation = gl.getUniformLocation(program, 'u_color')
 
-    gl.vertexAttribPointer(positionVertexLocation, 2, gl.FLOAT, false, 0, 0)
+    gl.enableVertexAttribArray(this.positionLocation)
 
-    gl.drawArrays(gl.TRIANGLES, 0, 3)
+    this.drawScene()
+
+    webglLessonsUI.setupSlider("#x", {slide: this.updatePosition(0), max: gl.canvas.width });
+    webglLessonsUI.setupSlider("#y", {slide: this.updatePosition(1), max: gl.canvas.height});
+
+    // gl.enableVertexAttribArray(this.positionLocation)
+    // gl.uniform2f(resolutionUniformLocation, gl.canvas.width, gl.canvas.height)
+    // gl.viewport(0, 0, gl.canvas.width, gl.canvas.height)
+
+    // gl.vertexAttribPointer(positionVertexLocation, 2, gl.FLOAT, false, 0, 0)
+
+    // gl.drawArrays(gl.TRIANGLES, 0, 3)
   },
   methods: {
     createShader(gl, type, source) {
@@ -89,6 +119,63 @@ export default {
       }
 
       throw('创建着色器程序失败', gl.getProgramInfoLog(program))
+    },
+    updatePosition(index) {
+      const _this = this
+      return function(event, ui) {
+        _this.translation[index] = ui.value
+        _this.drawScene()
+      }
+    },
+    drawScene() {
+      const gl = this.gl
+      const width = 100
+      const height = 30
+      const color = [Math.random(), Math.random(), Math.random(), 1];
+      const [x, y] = this.translation
+      const { positionLocation, resolutionLocation, colorLocation } = this
+      webglUtils.resizeCanvasToDisplaySize(gl.canvas);
+
+      gl.viewport(0, 0, gl.canvas.width, gl.canvas.height)
+
+      gl.clear(gl.COLOR_BUFFER_BIT)
+
+      this.setRectangle(x, y, width, height)
+
+      const size = 2
+      const type = gl.FLOAT
+      const offset = 0
+      const normalize = false
+      const stride = 0
+      gl.vertexAttribPointer(positionLocation, size, type, normalize, stride, offset)
+
+      gl.uniform2f(resolutionLocation, gl.canvas.width, gl.canvas.height)
+      console.log('COLOR', color);
+      
+      gl.uniform4fv(colorLocation, color)
+
+      const primitiveType = gl.TRIANGLES
+      const cont = 6
+
+      gl.drawArrays(primitiveType, offset, cont)
+
+    },
+    setRectangle(x, y, width, height) {
+      const gl = this.gl
+      const x1 = x
+      const x2 = x + width
+      const y1 = y
+      const y2 = y + height
+      
+
+      gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
+        x1, y1,
+        x2, y1,
+        x1, y2,
+        x1, y2,
+        x2, y2,
+        x2, y1
+      ]), gl.STATIC_DRAW)
     }
   }
 }
