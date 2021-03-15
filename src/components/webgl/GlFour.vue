@@ -83,14 +83,6 @@ export default {
 
     webglLessonsUI.setupSlider("#x", {slide: this.updatePosition(0), max: gl.canvas.width });
     webglLessonsUI.setupSlider("#y", {slide: this.updatePosition(1), max: gl.canvas.height});
-
-    // gl.enableVertexAttribArray(this.positionLocation)
-    // gl.uniform2f(resolutionUniformLocation, gl.canvas.width, gl.canvas.height)
-    // gl.viewport(0, 0, gl.canvas.width, gl.canvas.height)
-
-    // gl.vertexAttribPointer(positionVertexLocation, 2, gl.FLOAT, false, 0, 0)
-
-    // gl.drawArrays(gl.TRIANGLES, 0, 3)
   },
   methods: {
     createShader(gl, type, source) {
