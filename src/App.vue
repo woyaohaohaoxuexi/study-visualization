@@ -34,6 +34,7 @@ import GlOne from '@/components/webgl/GlOne'
 import GlTwo from "@/components/webgl/GlTwo";
 import GlThree from "@/components/webgl/GlThree";
 import GlFour from "@/components/webgl/GlFour";
+import GlFive from '@/components/webgl/GlFive'
 import WordCloud from "@/components/3D/WordCloud";
 import Swiper from '@/components/swiper/index'
 export default {
@@ -67,12 +68,13 @@ export default {
     GlTwo,
     GlThree,
     GlFour,
+    GlFive,
     WordCloud,
     Swiper
   },
   data() {
     return {
-      currentComponent: 'Swiper'
+      currentComponent: 'GlFive'
     }
   }
 }

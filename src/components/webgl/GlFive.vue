@@ -5,7 +5,9 @@
     <div id="ui">
       <div id="x"></div>
       <div id="y"></div>
-      <div id="rotation"></div>
+      <div id="angle"></div>
+      <div id="scaleX"></div>
+      <div id="scaleY"></div>
     </div>
   </div>
   </div>
@@ -23,12 +25,14 @@ export default {
     return {
       translation: [],
       rotation: [],
+      scaletion: [],
       color: [Math.random(), Math.random(), Math.random(), 1],
       gl: null,
       positionLocation: null,
       resolutionLocation: null,
       translationLocation: null,
       rotatedLocation: null,
+      scaledLocation: null,
       colorLocation: null
     }
   },
@@ -45,16 +49,19 @@ export default {
       uniform vec2 u_resolution;
       uniform vec2 u_translation;
       uniform vec2 u_rotation;
+      uniform vec2 u_scale;
       void main() {
+        // 缩放矩阵
+        vec2 scaledPosition = a_position * u_scale;
         // 旋转矩阵
         vec2 rotatedPosition = vec2 (
-          a_position.x * u_rotation.x - a_position.y * u_rotation.y,
-          a_position.x * u_rotation.y + a_position.y * u_rotation.x
+          scaledPosition.x * u_rotation.x + scaledPosition.y * u_rotation.y,
+          scaledPosition.y * u_rotation.x - scaledPosition.x * u_rotation.y
         );
         // 平移矩阵
         vec2 position = rotatedPosition + u_translation;
 
-        vec2 zeroToOne = a_position / u_resolution;
+        vec2 zeroToOne = position / u_resolution;
         vec2 zeroToTwo = zeroToOne * 2.0;
         vec2 clipSpace = zeroToTwo - 1.0;
         gl_Position = vec4(clipSpace * vec2(1, -1), 0, 1.0);
@@ -108,18 +115,22 @@ export default {
     this.resolutionLocation = gl.getUniformLocation(program, 'u_resolution')
     this.translationLocation = gl.getUniformLocation(program, 'u_translation')
     this.rotatedLocation = gl.getUniformLocation(program, 'u_rotation')
+    this.scaledLocation = gl.getUniformLocation(program, 'u_scale')
     this.colorLocation = gl.getUniformLocation(program, 'u_color')
 
     gl.enableVertexAttribArray(this.positionLocation)
 
     this.translation = [100, 150]
-    this.rotation = [0, 1]
+    this.rotation = [0, 0]
+    this.scaletion = [1, 1]
 
     this.drawScene()
 
     webglLessonsUI.setupSlider("#x", {slide: this.updatePosition(0), max: gl.canvas.width });
     webglLessonsUI.setupSlider("#y", {slide: this.updatePosition(1), max: gl.canvas.height});
-
+    webglLessonsUI.setupSlider("#angle", {slide: this.updateAngle, max: 360});
+    webglLessonsUI.setupSlider("#scaleX", {value: this.scaletion[0], slide: this.updateScale(0), min: -5, max: 5, step: 0.01, precision: 2});
+    webglLessonsUI.setupSlider("#scaleY", {value: this.scaletion[1], slide: this.updateScale(1), min: -5, max: 5, step: 0.01, precision: 2});
     // gl.enableVertexAttribArray(this.positionLocation)
     // gl.uniform2f(resolutionUniformLocation, gl.canvas.width, gl.canvas.height)
     // gl.viewport(0, 0, gl.canvas.width, gl.canvas.height)
@@ -163,8 +174,21 @@ export default {
         _this.drawScene()
       }
     },
+    updateAngle(event, ui) {
+      const angleInRadians = (360 - ui.value) * Math.PI / 180
+      this.rotation[0] = Math.cos(angleInRadians)
+      this.rotation[1] = Math.sin(angleInRadians)
+      this.drawScene()
+    },
+    updateScale(index) {
+      const _this = this
+      return (event, val) => {
+        this.scaletion[index] = val.value
+        this.drawScene()
+      }
+    },
     drawScene() {
-      const { positionLocation, resolutionLocation, translationLocation, rotatedLocation, colorLocation } = this
+      const { gl, positionLocation, resolutionLocation, translationLocation, rotatedLocation, scaledLocation, colorLocation } = this
       webglUtils.resizeCanvasToDisplaySize(gl.canvas);
 
       gl.viewport(0, 0, gl.canvas.width, gl.canvas.height)
@@ -181,32 +205,17 @@ export default {
       gl.uniform2f(resolutionLocation, gl.canvas.width, gl.canvas.height)      
       
       gl.uniform4fv(colorLocation, this.color)
-
-      gl.uniform2f(translationLocation, this.translation)
-      gl.uniform2f(rotatedLocation, this.rotation)
-
+      
+      gl.uniform2fv(translationLocation, this.translation)
+      gl.uniform2fv(rotatedLocation, this.rotation)
+      gl.uniform2fv(scaledLocation, this.scaletion)
+      console.log('缩放矩阵', this.scaletion);
+      
       const primitiveType = gl.TRIANGLES
       const cont = 18
 
       gl.drawArrays(primitiveType, offset, cont)
 
-    },
-    setRectangle(x, y, width, height) {
-      const gl = this.gl
-      const x1 = x
-      const x2 = x + width
-      const y1 = y
-      const y2 = y + height
-      
-
-      gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
-        x1, y1,
-        x2, y1,
-        x1, y2,
-        x1, y2,
-        x2, y2,
-        x2, y1
-      ]), gl.STATIC_DRAW)
     }
   }
 }
