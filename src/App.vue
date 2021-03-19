@@ -29,6 +29,7 @@ import EchartsOne from "@/components/echarts/EchartsOne";
 import EchartsGl from "@/components/echarts/EchartsGl";
 import EchartsMap from "@/components/echarts/EchartsMap";
 import EchartsMap2 from "@/components/echarts/EchartsMap2";
+import EchartsLing from '@/components/echarts/EchartsLing';
 import CanvasRotate from "@/components/canvas/CanvasRotate";
 import GlOne from '@/components/webgl/GlOne'
 import GlTwo from "@/components/webgl/GlTwo";
@@ -62,6 +63,7 @@ export default {
     EchartsGl,
     EchartsMap,
     EchartsMap2,
+    EchartsLing,
     CanvasRotate,
     GlOne,
     GlTwo,
@@ -72,7 +74,7 @@ export default {
   },
   data() {
     return {
-      currentComponent: 'Swiper'
+      currentComponent: 'EchartsLing'
     }
   }
 }
