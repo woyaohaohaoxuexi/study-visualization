@@ -1,11 +1,33 @@
 <template>
-  <div ref="echarts" class='content'>
-
-  </div>
+  <div ref="echarts" class='content'></div>
 </template>
 
 <script>
 import * as echarts from 'echarts'
+const yaLing = echarts.graphic.extendShape({
+    shape: {
+      width: 0,
+      height: 0,
+      x: 0,
+      y: 0
+    },
+  buildPath: (ctx, shape) => {
+    const { width, height, x, y } = shape
+    ctx.moveTo(x, y)
+    ctx.arc(x + width / 2, y, 18, Math.PI * 2, false)
+    ctx.fillStyle = 'skyblue'
+    ctx.fill()
+    ctx.closePath()
+    ctx.beginPath()
+    // ctx.moveTo(x + width / 2, y + height, 22, Math.PI * 2, false)
+    ctx.arc(x + width / 2, y, 8, Math.PI * 2, false)
+    ctx.fillStyle = 'red'
+    ctx.fill()
+    ctx.closePath()
+  }
+}
+)
+echarts.graphic.registerShape('yaLing', yaLing)
 export default {
   name: '',
   data() {
@@ -15,7 +37,7 @@ export default {
   },
   mounted() {
     this.myEcharts = echarts.init(this.$refs.echarts)
-    this.testTwo()
+    this.testThree()
   },
   methods: {
     // test
@@ -130,7 +152,7 @@ export default {
     testTwo() {
       const options = {
         grid: {
-          left: '10%',
+          left: '0%',
           containLabel: true
         },
         xAxis: {
@@ -159,9 +181,6 @@ export default {
             type: 'bar',
             name: 'top',
             stack: '总数据',
-            itemStyle: {
-              color: 'rgba(0, 0, 0, 0)'
-            },
             barWidth: 8,
             itemStyle: {
               color: 'skyblue',
@@ -211,15 +230,116 @@ export default {
       }
       this.myEcharts.setOption(options)
     },
-    testThree() {}
+    testThree() {
+      const options = {
+        xAxis: {
+          type: 'category',
+          data: ['海洋产业1', '海洋渔业', '海洋盐业', '海洋旅游业']
+        },
+        yAxis: {},
+        // graphic: {
+        //   type: 'circle',
+        //   shape: {
+        //     cx: 20,
+        //     cy: 30,
+        //     r: 100
+        //   },
+        //   style: {
+        //     fill: 'skyblue',
+        //
+        //   }
+        // },
+        series: [
+          {
+            type: 'custom',
+            renderItem: function(params, api) {
+              console.log('params', params)
+              console.log('api', api)
+              const low = api.value(1)
+              const hight = api.value(2)
+              const index = api.value(3)
+              console.log('low, hight', low, hight)
+              const startPoint = api.coord([index, low])
+              const endPoint = api.coord([index, hight])
+              console.log('开始坐标点', startPoint)
+              console.log('end 坐标点', endPoint)
+              const height = api.size([0, 1])[1] * (hight - low)
+              console.log('height', height)
+              const rectWidth = 6
+              return {
+                type: 'group',
+                x: startPoint[0],
+                y: endPoint[1],
+                width: 10,
+                height: height,
+                children: [
+                  {
+                    type: 'rect',
+                    shape: {
+                      x: 0,
+                      y: 0,
+                      width: rectWidth,
+                      height: height
+                    },
+                    transition: 'shape',
+                    style: {
+                      fill: '#007dac'
+                    }
+                  },
+                  {
+                    type: 'circle',
+                    shape: {
+                      cx: rectWidth / 2,
+                      cy: 0,
+                      r: 6
+                    },
+                    transition: 'shape',
+                    style: {
+                      fill: '#fff',
+                      stroke: 'rgb(78, 225, 39)',
+                      lineWidth: 4
+                    }
+                  },
+                  {
+                    type: 'circle',
+                    shape: {
+                      cx: rectWidth / 2,
+                      cy: height,
+                      r: 6
+                    },
+                    transition: 'shape',
+                    style: {
+                      fill: '#fff',
+                      stroke: '#00b9fe',
+                      lineWidth: 4
+                    }
+                  }
+                ]
+              }
+            },
+            data: [
+                ['海洋产业一号', -2, 4, 0],
+                ['海洋产业二号', 2, 5, 1],
+                ['海洋产业三号', 0, 5, 2],
+                ['海洋产业四号', -3, 6, 3]
+            ],
+            encode: {
+              x: [0],
+              y: [1, 2]
+            }
+          }
+        ]
+      }
+      this.myEcharts.setOption(options)
+    }
   }
 }
 </script>
 
 <style scoped lang="scss">
 .content {
-  width: 800px;
-  height: 800px;
+  width: 400px;
+  height: 400px;
   margin: 10px auto;
 }
 </style>
