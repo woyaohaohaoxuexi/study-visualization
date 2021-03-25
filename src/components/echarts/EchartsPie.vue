@@ -48,7 +48,7 @@ export default {
         itemStyle: {
           color: '#9e60f9'
         }
-      }], 0.35)
+      }], 0.25)
 
       this.myChart.setOption(option)
     },
@@ -75,41 +75,43 @@ export default {
 
       // 计算高亮效果的放大比例（未高亮，则比例为 1）
       let hoverRate = isHovered ? 1.05 : 1;
-
+      const i = h * 0.04
+      // k *= i
       // 返回曲面参数方程
       return {
+        // 水平方向
         u: {
           // min: -Math.PI,
           min: 0,
           // max: Math.PI * 3,
-          max: Math.PI * 2,
+          max: Math.PI * 3,
           step: Math.PI / 32
         },
-
+        //垂直方向
         v: {
           min: 0,
-          max: Math.PI * 2,
+          max: Math.PI * 3,
           step: Math.PI / 20
         },
 
         x: function(u, v) {
           if (u < startRadian) {
-            return offsetX + Math.cos(startRadian) * (1 + Math.cos(v) * k) * hoverRate * h * 0.04;
+            return offsetX + Math.cos(startRadian) * (1 + Math.cos(v) * k) * hoverRate;
           }
           if (u > endRadian) {
-            return offsetX + Math.cos(endRadian) * (1 + Math.cos(v) * k) * hoverRate * h * 0.04;
+            return offsetX + Math.cos(endRadian) * (1 + Math.cos(v) * k) * hoverRate;
           }
-          return offsetX + Math.cos(u) * (1 + Math.cos(v) * k) * hoverRate * h * 0.04;
+          return offsetX + Math.cos(u) * (1 + Math.cos(v) * k) * hoverRate;
         },
 
         y: function(u, v) {
           if (u < startRadian) {
-            return offsetY + Math.sin(startRadian) * (1 + Math.cos(v) * k) * hoverRate * h * 0.04;
+            return offsetY + Math.sin(startRadian) * (1 + Math.cos(v) * k) * hoverRate;
           }
           if (u > endRadian) {
-            return offsetY + Math.sin(endRadian) * (1 + Math.cos(v) * k) * hoverRate * h * 0.04;
+            return offsetY + Math.sin(endRadian) * (1 + Math.cos(v) * k) * hoverRate;
           }
-          return offsetY + Math.sin(u) * (1 + Math.cos(v) * k) * hoverRate * h * 0.04;
+          return offsetY + Math.sin(u) * (1 + Math.cos(v) * k) * hoverRate;
         },
 
         z: function(u, v) {

@@ -39,6 +39,7 @@ import GlFive from '@/components/webgl/GlFive'
 import WordCloud from "@/components/3D/WordCloud";
 import Swiper from '@/components/swiper/index'
 import EchartsPie from "./components/echarts/EchartsPie";
+import EchaertsSurface from "./components/echarts/EchaertsSurface";
 export default {
   name: 'App',
   components: {
@@ -67,6 +68,7 @@ export default {
     EchartsMap2,
     EchartsLing,
     EchartsPie,
+    EchaertsSurface,
     CanvasRotate,
     GlOne,
     GlTwo,
@@ -78,7 +80,7 @@ export default {
   },
   data() {
     return {
-      currentComponent: 'EchartsPie'
+      currentComponent: 'EchaertsSurface'
     }
   }
 }
