@@ -37,6 +37,7 @@ import GlThree from "@/components/webgl/GlThree";
 import GlFour from "@/components/webgl/GlFour";
 import GlFive from '@/components/webgl/GlFive'
 import GLSix from "./components/webgl/GLSix";
+import GlSeven from "./components/webgl/GlSeven";
 import WordCloud from "@/components/3D/WordCloud";
 import Swiper from '@/components/swiper/index'
 import EchartsPie from "./components/echarts/EchartsPie";
@@ -77,12 +78,13 @@ export default {
     GlFour,
     GlFive,
     GLSix,
+    GlSeven,
     WordCloud,
     Swiper
   },
   data() {
     return {
-      currentComponent: 'GLSix'
+      currentComponent: 'GlSeven'
     }
   }
 }

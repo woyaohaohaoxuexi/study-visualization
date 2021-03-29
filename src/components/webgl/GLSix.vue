@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import { createShader, createProgram, m3 } from './utils_two'
+import { createShader, createProgram, m3 } from './glUtils'
 export default {
   name: "GLSix",
   data() {
