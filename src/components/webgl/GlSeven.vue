@@ -234,7 +234,6 @@ export default {
     },
     // 设置颜色值
     setColor(gl) {
-      console.log('设置颜色')
       gl.bufferData(gl.ARRAY_BUFFER, new Uint8Array([
         // left column front
         200,  70, 120,
@@ -389,7 +388,6 @@ export default {
       gl.vertexAttribPointer(colorLocation, 3, gl.UNSIGNED_BYTE, true, 0, 0)
 
       // gl.uniform4fv(colorLocation, color)
-      console.log('colorLocation', gl)
       let matrix = m4.projection(gl.canvas.clientWidth, gl.canvas.clientHeight, 400)
       matrix = m4.translate(matrix, transition[0], transition[1], transition[2])
       matrix = m4.xRotate(matrix, rotation[0])
