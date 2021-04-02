@@ -79,10 +79,10 @@ export const m3 = {
 export const m4 = {
   translation(tx, ty, tz) {
     return [
-        1, 0, 0, 0,
-        0, 1, 0, 0,
-        0, 0, 1, 0,
-        tx, ty, tz, 1
+      1, 0, 0, 0,
+      0, 1, 0, 0,
+      0, 0, 1, 0,
+      tx, ty, tz, 1
     ]
   },
   xRotation(angleInRadians) {
@@ -90,10 +90,10 @@ export const m4 = {
     const s = Math.sin(angleInRadians)
 
     return [
-        1, 0, 0, 0,
-        0, c, s, 0,
-        0, -s, c, 0,
-        0, 0, 0, 1
+      1, 0, 0, 0,
+      0, c, s, 0,
+      0, -s, c, 0,
+      0, 0, 0, 1
     ]
   },
   yRotation(angleInRadians) {
@@ -101,10 +101,10 @@ export const m4 = {
     const s = Math.sin(angleInRadians)
 
     return [
-        c, 0, -s, 0,
-        0, 1, 0, 0,
-        s, 0, c, 0,
-        0, 0, 0, 1
+      c, 0, -s, 0,
+      0, 1, 0, 0,
+      s, 0, c, 0,
+      0, 0, 0, 1
     ]
   },
   zRotation(angleInRadians) {
@@ -120,22 +120,22 @@ export const m4 = {
   },
   scaling(sx, sy, sz) {
     return [
-        sx, 0, 0, 0,
-        0, sy, 0, 0,
-        0, 0, sz, 0,
-        0, 0, 0, 1
+      sx, 0, 0, 0,
+      0, sy, 0, 0,
+      0, 0, sz, 0,
+      0, 0, 0, 1
     ]
   },
   // 将像素坐标转换到裁剪空间
   projection(width, height, depth) {
     return [
-        2 / width, 0, 0, 0,
-        0, -2 / height, 0, 0,
-        0, 0, 2 / depth, 0,
-        -1, 1, 0, 1
+      2 / width, 0, 0, 0,
+      0, -2 / height, 0, 0,
+      0, 0, 2 / depth, 0,
+      -1, 1, 0, 1
     ]
   },
-   // 4x4 矩阵乘法
+  // 4x4 矩阵乘法
   multiply: function(a, b) {
     var a00 = a[0 * 4 + 0];
     var a01 = a[0 * 4 + 1];
