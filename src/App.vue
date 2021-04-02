@@ -84,7 +84,7 @@ export default {
   },
   data() {
     return {
-      currentComponent: 'GlSeven'
+      currentComponent: 'EchartsPie'
     }
   }
 }

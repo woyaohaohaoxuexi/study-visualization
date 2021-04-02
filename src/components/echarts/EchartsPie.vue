@@ -75,7 +75,7 @@ export default {
 
       // 计算高亮效果的放大比例（未高亮，则比例为 1）
       let hoverRate = isHovered ? 1.05 : 1;
-      const i = h * 0.04
+      const i = h * 0.05
       // k *= i
       // 返回曲面参数方程
       return {
@@ -84,34 +84,40 @@ export default {
           // min: -Math.PI,
           min: 0,
           // max: Math.PI * 3,
-          max: Math.PI * 3,
-          step: Math.PI / 32
+          max: Math.PI * 2,
+          step: Math.PI / 30
         },
         //垂直方向
         v: {
           min: 0,
-          max: Math.PI * 3,
-          step: Math.PI / 20
+          max: Math.PI * 2,
+          step: Math.PI / 30
         },
 
         x: function(u, v) {
           if (u < startRadian) {
-            return offsetX + Math.cos(startRadian) * (1 + Math.cos(v) * k) * hoverRate;
+            // return offsetX + Math.cos(startRadian) * (1 + Math.cos(v) * k) * hoverRate;
+            return offsetX + Math.cos(startRadian) * (1 + Math.cos(v) * k * 0.5)
           }
           if (u > endRadian) {
-            return offsetX + Math.cos(endRadian) * (1 + Math.cos(v) * k) * hoverRate;
+            // return offsetX + Math.cos(endRadian) * (1 + Math.cos(v) * k) * hoverRate;
+            return offsetX + Math.cos(endRadian) * i * (1 + Math.cos(v) * k * i * 0.5)
           }
-          return offsetX + Math.cos(u) * (1 + Math.cos(v) * k) * hoverRate;
+          // return offsetX + Math.cos(u) * (1 + Math.cos(v) * k) * hoverRate;
+          return offsetX + Math.cos(u) * i * (1 + Math.cos(v) * k * i * 0.5)
         },
 
         y: function(u, v) {
           if (u < startRadian) {
-            return offsetY + Math.sin(startRadian) * (1 + Math.cos(v) * k) * hoverRate;
+            // return offsetY + Math.sin(startRadian) * (1 + Math.cos(v) * k) * hoverRate;
+            return offsetY + Math.sin(startRadian) * (1 + Math.cos(v) * k * 0.5)
           }
           if (u > endRadian) {
-            return offsetY + Math.sin(endRadian) * (1 + Math.cos(v) * k) * hoverRate;
+            // return offsetY + Math.sin(endRadian) * (1 + Math.cos(v) * k) * hoverRate;
+            return offsetY + Math.sin(endRadian) * i * (1 + Math.cos(v) * k * i * 0.5)
           }
-          return offsetY + Math.sin(u) * (1 + Math.cos(v) * k) * hoverRate;
+          // return offsetY + Math.sin(u) * (1 + Math.cos(v) * k) * hoverRate;
+          return offsetY + Math.sin(u) * i * (1 + Math.cos(v) * k * i * 0.5)
         },
 
         z: function(u, v) {
@@ -124,7 +130,7 @@ export default {
           // }
           // return 1 * h
           // return Math.sin(v) > 0 ? 1 * h * .1 : -1;
-          return Math.sin(v) > 0 ? 1 : -1;
+          return Math.sin(v) > 0 ? 2 : -2;
         }
       };
     },
@@ -245,12 +251,11 @@ export default {
           boxHeight: 10,
           viewControl: { //3d效果可以放大、旋转等，请自己去查看官方配置
             alpha: 40,
-            // autoRotate: true,
             // beta: 40,
-            rotateSensitivity: 0,
-            zoomSensitivity: 0,
-            panSensitivity: 0,
-            autoRotate: false
+            rotateSensitivity: [2, 2],
+            zoomSensitivity: 1,
+            panSensitivity: 1,
+            // autoRotate: true
           },
           //后处理特效可以为画面添加高光、景深、环境光遮蔽（SSAO）、调色等效果。可以让整个画面更富有质感。
           postEffect: {//配置这项会出现锯齿，请自己去查看官方配置有办法解决
