@@ -37,7 +37,7 @@ export default {
   },
   mounted() {
     this.myEcharts = echarts.init(this.$refs.echarts)
-    this.testThree()
+    this.testFour()
   },
   methods: {
     // test
@@ -233,38 +233,85 @@ export default {
     testThree() {
       const options = {
         xAxis: {
+          show: true,
           type: 'category',
-          data: ['海洋产业1', '海洋渔业', '海洋盐业', '海洋旅游业']
+          axisLine: { // x 坐标轴设置
+            show: false
+          },
+          axisTick: { // 分隔符
+            show: false
+          },
+          axisLabel: {
+            // inside: false
+            rotate: -40,
+            // width: 60,  // 配置了宽度后，可以设置文本超出样式
+            margin: 12,
+            color: 'orange',
+            // overflow: 'truncate',  // 文本超出如何显示
+            // ellipsis: './/'
+          },
+          axisPointer: {  // 坐标轴指示器，鼠标移入对应的坐标轴后，会显示对应坐标轴的信息
+            // show: true
+          }
         },
-        yAxis: {},
-        // graphic: {
-        //   type: 'circle',
-        //   shape: {
-        //     cx: 20,
-        //     cy: 30,
-        //     r: 100
-        //   },
-        //   style: {
-        //     fill: 'skyblue',
-        //
-        //   }
-        // },
+        yAxis: {
+          splitLine: {
+            show: true,
+            lineStyle: {
+              type: 'dashed'
+            }
+          }
+        },
+        dataset: {
+          source: [
+            ['海洋产业一号', -2, 4],
+            ['海洋产业二号', 2, 5],
+            ['海洋产业三号', 0, 5],
+            ['海洋产业四号', -3, 6],
+            ['海洋产业五号', 4, -2]
+          ]
+        },
+        tooltip: {
+          trigger: 'item'
+        },
+        legend: {
+          show: true,
+          left: 20,
+          top: 0,
+          formatter(name) {
+            console.log('图例name', name)
+            return 'Lenged' + name
+          },
+          data: [
+              'custom'
+          ]
+        },
         series: [
           {
+            name: '本年前3季度增速',
+            type: 'scatter',
+            symbol: 'circle',
+            symbolSize: 10,
+            itemStyle: {
+              color: '#fff',
+              borderColor: 'rgb(78, 225, 39)',
+              borderWidth: 4,
+              opacity: 1
+            },
+            encode: {
+              y: [2]
+            }
+          },
+          {
             type: 'custom',
+            name: '系列1',
             renderItem: function(params, api) {
-              console.log('params', params)
-              console.log('api', api)
               const low = api.value(1)
               const hight = api.value(2)
               const index = api.value(3)
-              console.log('low, hight', low, hight)
               const startPoint = api.coord([index, low])
               const endPoint = api.coord([index, hight])
-              console.log('开始坐标点', startPoint)
-              console.log('end 坐标点', endPoint)
               const height = api.size([0, 1])[1] * (hight - low)
-              console.log('height', height)
               const rectWidth = 6
               return {
                 type: 'group',
@@ -276,7 +323,7 @@ export default {
                   {
                     type: 'rect',
                     shape: {
-                      x: 0,
+                      x: -rectWidth / 2,
                       y: 0,
                       width: rectWidth,
                       height: height
@@ -286,34 +333,34 @@ export default {
                       fill: '#007dac'
                     }
                   },
-                  {
-                    type: 'circle',
-                    shape: {
-                      cx: rectWidth / 2,
-                      cy: 0,
-                      r: 6
-                    },
-                    transition: 'shape',
-                    style: {
-                      fill: '#fff',
-                      stroke: 'rgb(78, 225, 39)',
-                      lineWidth: 4
-                    }
-                  },
-                  {
-                    type: 'circle',
-                    shape: {
-                      cx: rectWidth / 2,
-                      cy: height,
-                      r: 6
-                    },
-                    transition: 'shape',
-                    style: {
-                      fill: '#fff',
-                      stroke: '#00b9fe',
-                      lineWidth: 4
-                    }
-                  }
+                  // {
+                  //   type: 'circle',
+                  //   shape: {
+                  //     cx: rectWidth / 2,
+                  //     cy: 0,
+                  //     r: 6
+                  //   },
+                  //   transition: 'shape',
+                  //   style: {
+                  //     fill: '#fff',
+                  //     stroke: 'rgb(78, 225, 39)',
+                  //     lineWidth: 4
+                  //   }
+                  // },
+                  // {
+                  //   type: 'circle',
+                  //   shape: {
+                  //     cx: rectWidth / 2,
+                  //     cy: height,
+                  //     r: 6
+                  //   },
+                  //   transition: 'shape',
+                  //   style: {
+                  //     fill: '#fff',
+                  //     stroke: '#00b9fe',
+                  //     lineWidth: 4
+                  //   }
+                  // }
                 ]
               }
             },
@@ -326,6 +373,169 @@ export default {
             encode: {
               x: [0],
               y: [1, 2]
+            },
+            tooltip: {
+              formatter(params) {
+                console.log('tooltip params', params)
+                const [name, low, hight] = params.data
+                return `<div>
+                  <div>
+                    ${name}最高值是: <p>${hight}</p>
+                  </div>
+                  <div>
+                    ${name}最低值是：<p>${low}</p>
+                  </div>
+                </div>`
+              }
+            }
+          },
+          // {name: '系列2'}
+        ]
+      }
+      this.myEcharts.setOption(options)
+    },
+    testFour() {
+      const options = {
+        xAxis: {
+          show: true,
+          type: 'category',
+          axisLine: { // x 坐标轴设置
+            show: false
+          },
+          axisTick: { // 分隔符
+            show: false
+          },
+          axisLabel: {
+            // inside: false
+            rotate: -40,
+            // width: 60,  // 配置了宽度后，可以设置文本超出样式
+            margin: 12,
+            color: 'orange',
+            // overflow: 'truncate',  // 文本超出如何显示
+            // ellipsis: './/'
+          },
+          axisPointer: {  // 坐标轴指示器，鼠标移入对应的坐标轴后，会显示对应坐标轴的信息
+            // show: true
+          }
+        },
+        yAxis: {
+          type: 'value',
+          splitLine: {
+            show: true,
+            lineStyle: {
+              type: 'dashed'
+            }
+          },
+          // min: -10,
+          // max: 100,
+          // splitNumber: 5,
+          // minInterval: 5,
+          // maxInterval: 15,
+          axisLabel: {
+            formatter(value, index) {
+              console.log('axisLabel', value, index)
+              return value
+            }
+          }
+        },
+        dataset: {
+          source: [
+            ['海洋产业一号', -2, 10, 0],
+            ['海洋产业二号', 2, 5, 1],
+            ['海洋产业三号', 0, 5, 2],
+            ['海洋产业四号', -3, 6, 3],
+            ['海洋产业五号', 4, -2, 4]
+          ]
+        },
+        tooltip: {
+          trigger: 'item'
+        },
+        legend: {
+          show: true,
+          left: 20,
+          top: 0,
+          formatter(name) {
+            console.log('图例name', name)
+            return 'Lenged' + name
+          },
+          data: [
+            'custom'
+          ]
+        },
+        series: [
+          {
+            name: '本年前3季度增速',
+            type: 'scatter',
+            symbol: 'circle',
+            symbolSize: 10,
+            itemStyle: {
+              color: '#fff',
+              borderColor: 'rgb(78, 225, 39)',
+              borderWidth: 4,
+              opacity: 1
+            },
+            encode: {
+              y: [1]
+            }
+          },
+          {
+            type: 'custom',
+            name: '系列1',
+            renderItem: function(params, api) {
+              const low = api.value(1)
+              const hight = api.value(2)
+              const index = api.value(3)
+              const startPoint = api.coord([index, low])
+              const endPoint = api.coord([index, hight])
+              const height = api.size([0, 1])[1] * (hight - low)
+              const rectWidth = 6
+              return {
+                type: 'rect',
+                x: startPoint[0],
+                y: endPoint[1],
+                shape: {
+                  x: -rectWidth / 2,
+                  y: 0,
+                  width: rectWidth,
+                  height
+                },
+                style: {
+                  fill: '#007dac'
+                }
+              }
+            },
+            encode: {
+              x: [0],
+              y: [1, 2]
+            },
+            tooltip: {
+              formatter(params) {
+                console.log('tooltip params', params)
+                const [name, low, hight] = params.data
+                return `<div>
+                  <div>
+                    ${name}最高值是: <p>${hight}</p>
+                  </div>
+                  <div>
+                    ${name}最低值是：<p>${low}</p>
+                  </div>
+                </div>`
+              }
+            }
+          },
+          {
+            name: '上年1-3季度增速',
+            type: 'scatter',
+            symbol: 'circle',
+            symbolSize: 10,
+            itemStyle: {
+              color: '#fff',
+              borderColor: '#00b9fe',
+              borderWidth: 4,
+              opacity: 1
+            },
+            encode: {
+              y: [2]
             }
           }
         ]

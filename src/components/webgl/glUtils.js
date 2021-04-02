@@ -82,7 +82,7 @@ export const m4 = {
         1, 0, 0, 0,
         0, 1, 0, 0,
         0, 0, 1, 0,
-        tx, ty, tz, 0
+        tx, ty, tz, 1
     ]
   },
   xRotation(angleInRadians) {
