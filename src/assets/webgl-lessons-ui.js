@@ -132,9 +132,9 @@
     div.appendChild(label);
     div.appendChild(input);
     input.addEventListener('change', function(e) {
-       options.change(e, {
-         value: e.target.checked,
-       });
+      options.change(e, {
+        value: e.target.checked,
+      });
     });
 
     return {
@@ -165,9 +165,9 @@
     div.appendChild(label);
     div.appendChild(selectElem);
     selectElem.addEventListener('change', function(e) {
-       options.change(e, {
-         value: selectElem.selectedIndex,
-       });
+      options.change(e, {
+        value: selectElem.selectedIndex,
+      });
     });
 
     return {

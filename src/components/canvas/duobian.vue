@@ -54,11 +54,11 @@ export default {
 
       // 绘制五角星
       const stars = [
-          points[0],
-          points[2],
-          points[4],
-          points[1],
-          points[3]
+        points[0],
+        points[2],
+        points[4],
+        points[1],
+        points[3]
       ]
       ctx.save()
       ctx.translate(128, 0)
